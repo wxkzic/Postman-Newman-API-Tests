@@ -1,0 +1,248 @@
+{
+	"info": {
+		"_postman_id": "22ab26f6-8a8f-4f35-8e16-a2982fa519fe",
+		"name": "jsonplaceholder_api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49208323",
+		"_collection_link": "https://vintoniuk-illia-1880776.postman.co/workspace/illia-Vintoniuk's-Workspace~82a44729-9676-4c88-8d16-7c484887d224/collection/49208323-22ab26f6-8a8f-4f35-8e16-a2982fa519fe?action=share&source=collection_link&creator=49208323"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 201\", () => pm.response.to.have.status(201));",
+							"",
+							"pm.test(\"Response is JSON\", () => {",
+							"  pm.expect(pm.response.headers.get('content-type')).to.include('application/json');",
+							"});",
+							"",
+							"const json = pm.response.json();",
+							"",
+							"pm.test(\"Has id\", () => pm.expect(json.id).to.exist);",
+							"",
+							"pm.collectionVariables.set(\"postId\", String(json.id));",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.0"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"foo\",\n  \"body\": \"bar\",\n  \"userId\": 1\n}"
+				},
+				"url": {
+					"raw": "https://jsonplaceholder.typicode.com/users",
+					"protocol": "https",
+					"host": [
+						"jsonplaceholder",
+						"typicode",
+						"com"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let id = pm.collectionVariables.get('postId');\r",
+							"\r",
+							"if (!id) {\r",
+							"  id = '1';\r",
+							"  pm.collectionVariables.set('postId', id);\r",
+							"}\r",
+							"pm.expect(id, 'postId must exist').to.be.ok;\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+							"",
+							"pm.test(\"Response is JSON\", () => {",
+							"  pm.expect(pm.response.headers.get('content-type')).to.include('application/json');",
+							"});",
+							"",
+							"const json = pm.response.json();",
+							"",
+							"pm.test(\"updated id matches\", () => {",
+							"  pm.expect(String(json.id)).to.eql(pm.collectionVariables.get(\"postId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.0"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": {{postId}},\n  \"title\": \"baz\",\n  \"body\": \"updated\",\n  \"userId\": 1\n}"
+				},
+				"url": {
+					"raw": "https://jsonplaceholder.typicode.com/posts/:id",
+					"protocol": "https",
+					"host": [
+						"jsonplaceholder",
+						"typicode",
+						"com"
+					],
+					"path": [
+						"posts",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{postId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let id = pm.collectionVariables.get('postId');\r",
+							"if (!id) {\r",
+							"  id = '1';\r",
+							"  pm.collectionVariables.set('postId', id);\r",
+							"}\r",
+							"pm.expect(id, 'postId must exist').to.be.ok;\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 200 or 204\", () => {",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+							"});",
+							"",
+							"pm.test(\"Empty object returned\", () => {",
+							"  const text = pm.response.text();",
+							"  try {",
+							"    const body = JSON.parse(text || '{}');",
+							"    pm.expect(body).to.eql({});",
+							"  } catch (e) {",
+							"    pm.expect(text.trim()).to.be.oneOf(['', '{}']);",
+							"  }",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.0"
+					}
+				],
+				"url": {
+					"raw": "https://jsonplaceholder.typicode.com/posts/:id",
+					"protocol": "https",
+					"host": [
+						"jsonplaceholder",
+						"typicode",
+						"com"
+					],
+					"path": [
+						"posts",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{postId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
