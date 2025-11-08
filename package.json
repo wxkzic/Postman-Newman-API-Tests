@@ -9,7 +9,7 @@
   },
   "scripts": {
     "pretest": "node -e \"require('fs').mkdirSync('reports',{recursive:true})\"",
-    "test": "newman run collections/reqres_collection.json -e environments/local.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export reports/newman.html"
+    "test": "newman run postman/jsonplaceholder_collection.json -r cli,htmlextra --reporter-htmlextra-export reports/newman.html"
   },
   "keywords": [],
   "author": "",
