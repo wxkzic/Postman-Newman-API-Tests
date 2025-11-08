@@ -8,7 +8,8 @@
     "newman-reporter-htmlextra": "^1.23.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "pretest": "node -e \"require('fs').mkdirSync('reports',{recursive:true})\"",
+    "test": "newman run collections/reqres_collection.json -e environments/local.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export reports/newman.html"
   },
   "keywords": [],
   "author": "",
